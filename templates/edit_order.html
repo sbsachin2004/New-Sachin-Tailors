@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Order - Sachin Tailors</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Sachin Tailors</h1>
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+    </header>
+    <main class="container">
+        <h1>Edit Order (Bill No: {{ order.bill_no }})</h1>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flash-messages">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        <form method="POST" action="{{ url_for('edit_order', bill_no=order.bill_no) }}">
+            <input type="text" name="mobile" value="{{ order.mobile }}" placeholder="Customer Mobile" required>
+            <textarea name="measurements" placeholder="Measurements" required>{{ order.measurements }}</textarea>
+            <textarea name="description" placeholder="Description" required>{{ order.description }}</textarea>
+            <input type="number" name="total_amount" value="{{ order.total_amount }}" placeholder="Total Amount" step="0.01" required>
+            <input type="number" name="advance" value="{{ order.advance }}" placeholder="Advance" step="0.01" required>
+            <input type="date" name="delivery_date" value="{{ order.delivery_date }}" required>
+            <select name="status" required>
+                <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
+                <option value="In Progress" {% if order.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                <option value="Completed" {% if order.status == 'Completed' %}selected{% endif %}>Completed</option>
+            </select>
+            <button type="submit" class="btn">Update Order</button>
+        </form>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn">Back to Dashboard</a>
+    </main>
+    <footer>
+        &copy; 2025 Sachin Tailors. All rights reserved.
+    </footer>
+</body>
+</html>

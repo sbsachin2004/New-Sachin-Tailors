@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Sachin Tailors</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Sachin Tailors</h1>
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+    </header>
+    <main class="container">
+        <h1>Analytics</h1>
+        <div>
+            <h2>Summary</h2>
+            <p><strong>Total Orders:</strong> {{ analytics.total_orders }}</p>
+            <p><strong>Total Revenue:</strong> ${{ analytics.total_revenue|round(2) }}</p>
+            <p><strong>Average Order Value:</strong> ${{ analytics.avg_order_value|round(2) }}</p>
+            <p><strong>Total Unique Customers:</strong> {{ analytics.total_customers }}</p>
+            <h2>Orders by Status</h2>
+            <ul>
+                {% for status, count in analytics.orders_by_status.items() %}
+                    <li>{{ status }}: {{ count }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn">Back to Dashboard</a>
+    </main>
+    <footer>
+        &copy; 2025 Sachin Tailors. All rights reserved.
+    </footer>
+</body>
+</html>

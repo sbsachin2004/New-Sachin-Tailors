@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Customer - Sachin Tailors</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Sachin Tailors</h1>
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+    </header>
+    <main class="container">
+        <h1>Edit Customer (Mobile: {{ customer.mobile }})</h1>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flash-messages">
+                    {% for message in messages %}
+                        <li class="success">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        <form method="POST" action="{{ url_for('edit_customer', mobile=customer.mobile) }}">
+            <input type="text" name="customer_code" value="{{ customer.customer_code }}" placeholder="Customer Code" required>
+            <textarea name="measurements" placeholder="Measurements" required>{{ customer.measurements }}</textarea>
+            <button type="submit" class="btn">Update Customer</button>
+        </form>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn">Back to Dashboard</a>
+    </main>
+    <footer>
+        &copy; 2025 Sachin Tailors. All rights reserved.
+    </footer>
+</body>
+</html>

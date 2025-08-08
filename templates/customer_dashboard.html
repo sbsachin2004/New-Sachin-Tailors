@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard - Sachin Tailors</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Sachin Tailors</h1>
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+    </header>
+    <main class="container">
+        <h1>Customer Dashboard</h1>
+        <h2>Welcome, {{ customer_code }}</h2>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flash-messages">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <h2>Your Orders</h2>
+        <table>
+            <tr>
+                <th>Bill No</th>
+                <th>Measurements</th>
+                <th>Description</th>
+                <th>Total Amount</th>
+                <th>Advance</th>
+                <th>Due Amount</th>
+                <th>Delivery Date</th>
+                <th>Created Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.bill_no }}</td>
+                    <td>{{ order.measurements }}</td>
+                    <td>{{ order.description }}</td>
+                    <td>{{ order.total_amount }}</td>
+                    <td>{{ order.advance }}</td>
+                    <td>{{ order.due_amount }}</td>
+                    <td>{{ order.delivery_date }}</td>
+                    <td>{{ order.created_date }}</td>
+                    <td>{{ order.status }}</td>
+                    <td>
+                        <a href="{{ url_for('download_invoice', bill_no=order.bill_no) }}" class="btn">Download Invoice</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </main>
+    <footer>
+        &copy; 2025 Sachin Tailors. All rights reserved.
+    </footer>
+</body>
+</html>
