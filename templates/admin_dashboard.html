@@ -2,72 +2,7 @@
 <html lang="en">
 <head>
 
-  <!-- Add this inside <header> right side -->
-<div class="flex items-center gap-2">
-  <label class="text-sm font-medium">View:</label>
-  <select id="viewSwitch" class="bg-white text-black px-2 py-1 rounded shadow-sm">
-    <option value="auto">Auto</option>
-    <option value="desktop">Desktop</option>
-    <option value="mobile">Mobile</option>
-  </select>
-</div>
-
-<script>
-  // Function to detect if device is mobile
-  function isMobileDevice() {
-    return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile/i.test(navigator.userAgent);
-  }
-
-  // Apply view mode
-  function applyViewMode(mode) {
-    document.body.classList.remove("mobile-view", "desktop-view");
-    if (mode === "mobile") {
-      document.body.classList.add("mobile-view");
-    } else if (mode === "desktop") {
-      document.body.classList.add("desktop-view");
-    } else {
-      // Auto detect
-      document.body.classList.add(isMobileDevice() ? "mobile-view" : "desktop-view");
-    }
-  }
-
-  // Listen to toggle change
-  document.getElementById("viewSwitch").addEventListener("change", function() {
-    const selectedMode = this.value;
-    localStorage.setItem("viewMode", selectedMode);
-    applyViewMode(selectedMode);
-  });
-
-  // On load
-  document.addEventListener("DOMContentLoaded", function() {
-    const savedMode = localStorage.getItem("viewMode") || "auto";
-    document.getElementById("viewSwitch").value = savedMode;
-    applyViewMode(savedMode);
-  });
-</script>
-
-<style>
-  /* Mobile-specific styling */
-  .mobile-view table {
-    font-size: 14px;
-  }
-  .mobile-view form input,
-  .mobile-view form textarea,
-  .mobile-view form select {
-    font-size: 14px;
-    padding: 6px;
-  }
-  .mobile-view h1,
-  .mobile-view h2 {
-    font-size: 18px;
-  }
-
-  /* Desktop-specific styling */
-  .desktop-view table {
-    font-size: 16px;
-  }
-</style>
-
+  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard - Sachin Tailors</title>
