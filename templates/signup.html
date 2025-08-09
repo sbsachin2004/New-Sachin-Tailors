@@ -3,37 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - Sachin Tailors</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Sign Up - New Sachin Tailor</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .form-container {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            max-width: 380px;
+            margin: auto;
+        }
+        .form-container h1 {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+        }
+        .form-container input,
+        .form-container select {
+            width: 100%;
+            padding: 0.6rem;
+            margin-bottom: 0.9rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.2s ease-in-out;
+        }
+        .form-container input:focus,
+        .form-container select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 6px rgba(37, 99, 235, 0.4);
+        }
+        .btn {
+            width: 100%;
+            background-color: #fbbf24;
+            color: white;
+            padding: 0.6rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .btn:hover {
+            background-color: #f59e0b;
+        }
+        .link-btn {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            background-color: #fbbf24;
+            color: white;
+            border-radius: 6px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .link-btn:hover {
+            background-color: #f59e0b;
+        }
+        .flash-messages {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 1rem;
+        }
+        .flash-messages li.success {
+            background-color: #d1fae5;
+            color: #065f46;
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
-<body>
-    <header>
-        <h1>Sachin Tailors</h1>
+<body class="flex flex-col min-h-screen">
+    <header class="bg-blue-900 text-white text-center py-4 shadow-md">
+        <h1 class="text-3xl font-bold">New Sachin Tailor</h1>
     </header>
-    <main class="container">
-        <h1>Sign Up</h1>
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <ul class="flash-messages">
-                    {% for message in messages %}
-                        <li class="success">{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
-        <form method="POST" action="{{ url_for('signup') }}">
-            <input type="text" name="username" placeholder="Username (Mobile Number)" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <select name="role" required>
-                <option value="customer">Customer</option>
-                <option value="admin">Admin</option>
-            </select>
-            <button type="submit" class="btn">Sign Up</button>
-        </form>
-        <p>Already have an account? <a href="{{ url_for('login') }}" class="btn">Login</a></p>
+
+    <main class="flex-grow flex items-center justify-center">
+        <div class="form-container">
+            <h1>Sign Up</h1>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class="flash-messages">
+                        {% for message in messages %}
+                            <li class="success">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+            <form method="POST" action="{{ url_for('signup') }}">
+                <input type="text" name="username" placeholder="Username (Mobile Number)" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <select name="role" required>
+                    <option value="customer">Customer</option>
+                    <option value="admin">Admin</option>
+                </select>
+                <button type="submit" class="btn">Sign Up</button>
+            </form>
+            <p class="text-center mt-4 text-gray-600">
+                Already have an account?
+                <a href="{{ url_for('login') }}" class="link-btn">Login</a>
+            </p>
+        </div>
     </main>
-    <footer>
-        &copy; 2025 Sachin Tailors. All rights reserved.
+
+    <footer class="bg-blue-900 text-white text-center py-3">
+        &copy; 2025 New Sachin Tailor. All rights reserved.
     </footer>
 </body>
 </html>
