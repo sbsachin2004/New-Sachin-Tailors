@@ -46,98 +46,169 @@ def get_customer(mobile):
         logger.error(f"Error fetching customer '{mobile}': {str(e)}")
         return None
 
+
+logger = logging.getLogger(__name__)
+
 def generate_pdf_invoice(order):
     try:
         buffer = BytesIO()
-        doc = SimpleDocTemplate(buffer, pagesize=letter, topMargin=0.5*inch, bottomMargin=0.5*inch)
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=letter,
+            topMargin=0.75 * inch,
+            bottomMargin=0.75 * inch,
+            leftMargin=0.75 * inch,
+            rightMargin=0.75 * inch
+        )
         elements = []
         styles = getSampleStyleSheet()
 
-        # Custom styles
+        # =====================
+        # Custom Styles
+        # =====================
         title_style = ParagraphStyle(
             name='TitleStyle',
             fontName='Helvetica-Bold',
-            fontSize=20,
-            textColor=colors.HexColor('#1A2A44'),  # Navy blue
-            spaceAfter=12
+            fontSize=24,
+            textColor=colors.HexColor('#1A2A44'),
+            spaceAfter=12,
+            alignment=1  # Center
         )
         subtitle_style = ParagraphStyle(
             name='SubtitleStyle',
             fontName='Helvetica',
-            fontSize=12,
-            textColor=colors.HexColor('#333333'),
-            spaceAfter=8
+            fontSize=14,
+            textColor=colors.HexColor('#555555'),
+            spaceAfter=16,
+            alignment=1
+        )
+        section_header_style = ParagraphStyle(
+            name='SectionHeader',
+            fontName='Helvetica-Bold',
+            fontSize=15,
+            textColor=colors.HexColor('#1A2A44'),
+            spaceAfter=10,
+            spaceBefore=20
         )
         normal_style = ParagraphStyle(
             name='NormalStyle',
-            fontName='Times-Roman',
+            fontName='Helvetica',
             fontSize=11,
             textColor=colors.HexColor('#333333'),
-            spaceAfter=6
+            spaceAfter=8
+        )
+        tagline_style = ParagraphStyle(
+            name='TaglineStyle',
+            fontName='Helvetica-Oblique',
+            fontSize=13,
+            textColor=colors.HexColor('#D4A017'),
+            alignment=1,
+            spaceBefore=20,
+            spaceAfter=10
+        )
+        footer_style = ParagraphStyle(
+            name='FooterStyle',
+            fontName='Helvetica',
+            fontSize=10,
+            textColor=colors.HexColor('#777777'),
+            alignment=1,
+            spaceBefore=20
         )
 
-        # Header
-        elements.append(Paragraph("Sachin Tailors", title_style))
-        elements.append(Paragraph("Premium Tailoring Services", subtitle_style))
-        elements.append(Spacer(1, 0.2*inch))
+        # =====================
+        # Header Branding
+        # =====================
+        elements.append(Paragraph("SACHIN TAILORS", title_style))
+        elements.append(Paragraph("Premium Tailoring Services – Perfect Fit, Timeless Style", subtitle_style))
+        elements.append(Spacer(1, 0.3 * inch))
 
-        # Invoice Details
+        # =====================
+        # Invoice Details Table
+        # =====================
         details_data = [
-            ["Invoice Details", ""],
+            ["Invoice Details", ""],  # Header row with empty second cell for spanning
             ["Bill No:", order['bill_no']],
             ["Customer Mobile:", order['mobile']],
             ["Invoice Date:", datetime.now().strftime('%Y-%m-%d')],
             ["Created Date:", order['created_date']],
         ]
-        details_table = Table(details_data, colWidths=[2*inch, 4*inch])
+        details_table = Table(details_data, colWidths=[2.0 * inch, 3.5 * inch])
         details_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1A2A44')),  # Navy blue header
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-            ('FONT', (0, 0), (-1, 0), 'Helvetica-Bold', 12),
-            ('FONT', (0, 1), (-1, -1), 'Times-Roman', 11),
-            ('BOX', (0, 0), (-1, -1), 1, colors.HexColor('#D4A017')),  # Gold border
-            ('INNERGRID', (0, 0), (-1, -1), 0.5, colors.gray),
+            ('SPAN', (0, 0), (1, 0)),  # Span header across both columns
+            ('BACKGROUND', (0, 0), (1, 0), colors.HexColor('#1A2A44')),
+            ('TEXTCOLOR', (0, 0), (1, 0), colors.white),
+            ('FONT', (0, 0), (1, 0), 'Helvetica-Bold', 13),
+            ('ALIGN', (0, 0), (1, 0), 'CENTER'),
+            ('FONT', (0, 1), (0, -1), 'Helvetica-Bold', 11),  # Bold labels
+            ('FONT', (1, 1), (1, -1), 'Helvetica', 11),
+            ('ALIGN', (0, 1), (0, -1), 'LEFT'),
+            ('ALIGN', (1, 1), (1, -1), 'LEFT'),
+            ('BOX', (0, 0), (-1, -1), 1.5, colors.HexColor('#D4A017')),
+            ('INNERGRID', (0, 0), (-1, -1), 0.75, colors.HexColor('#E0E0E0')),
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            ('PADDING', (0, 0), (-1, -1), 6),
+            ('PADDING', (0, 0), (-1, -1), 8),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#F9F9F9')),  # Light background for data rows
         ]))
         elements.append(details_table)
-        elements.append(Spacer(1, 0.3*inch))
+        elements.append(Spacer(1, 0.4 * inch))
 
-        # Order Details
+        # =====================
+        # Order Details Table
+        # =====================
+        elements.append(Paragraph("Order Details", section_header_style))
         order_data = [
             ["Description", "Measurements", "Total Amount", "Advance", "Due Amount", "Delivery Date"],
-            [order['description'], order['measurements'], f"${order['total_amount']:.2f}", 
-             f"${order['advance']:.2f}", f"${order['due_amount']:.2f}", order['delivery_date']],
+            [
+                Paragraph(order['description'], normal_style),
+                Paragraph(order['measurements'], normal_style),
+                f"{order['total_amount']:.2f}",
+                f"{order['advance']:.2f}",
+                f"{order['due_amount']:.2f}",
+                order['delivery_date']
+            ],
         ]
-        order_table = Table(order_data, colWidths=[1.5*inch, 1.5*inch, 1*inch, 1*inch, 1*inch, 1*inch])
+        order_table = Table(
+            order_data,
+            colWidths=[1.6 * inch, 1.6 * inch, 1.0 * inch, 1.0 * inch, 1.0 * inch, 1.3 * inch]
+        )
         order_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1A2A44')),  # Navy blue header
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1A2A44')),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
             ('FONT', (0, 0), (-1, 0), 'Helvetica-Bold', 12),
-            ('FONT', (0, 1), (-1, -1), 'Times-Roman', 11),
-            ('BACKGROUND', (0, 1), (-1, 1), colors.HexColor('#F4F6F8')),  # Light gray row
-            ('BOX', (0, 0), (-1, -1), 1, colors.HexColor('#D4A017')),  # Gold border
-            ('INNERGRID', (0, 0), (-1, -1), 0.5, colors.gray),
+            ('ALIGN', (0, 0), (-1, 0), 'CENTER'),  # Header all center aligned
+            ('FONT', (0, 1), (-1, -1), 'Helvetica', 11),
+            ('BACKGROUND', (0, 1), (-1, 1), colors.HexColor('#F4F6F8')),
+            ('ALIGN', (0, 1), (1, 1), 'LEFT'),    # Description & Measurements left aligned
+            ('ALIGN', (2, 1), (4, 1), 'RIGHT'),   # Amounts right aligned
+            ('ALIGN', (5, 1), (5, 1), 'CENTER'),  # Delivery Date center aligned
+            ('BOX', (0, 0), (-1, -1), 1.5, colors.HexColor('#D4A017')),
+            ('INNERGRID', (0, 0), (-1, -1), 0.75, colors.HexColor('#E0E0E0')),
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            ('PADDING', (0, 0), (-1, -1), 6),
-            ('ALIGN', (2, 0), (-1, -1), 'RIGHT'),  # Right-align amounts
+            ('PADDING', (0, 0), (-1, -1), 8),
+            ('LINEBELOW', (0, -1), (-1, -1), 1.2, colors.HexColor('#1A2A44')),  # Bold line under totals
         ]))
-        elements.append(Paragraph("Order Details", subtitle_style))
         elements.append(order_table)
-        elements.append(Spacer(1, 0.3*inch))
+        elements.append(Spacer(1, 0.5 * inch))
 
-        # Footer
-        elements.append(Paragraph("Thank you for choosing Sachin Tailors!", normal_style))
-        elements.append(Paragraph("Contact: +91 8122288855 | Email: info@sachintailors.com", normal_style))
+        # =====================
+        # Footer & Tagline
+        # =====================
+        elements.append(Paragraph("Thank you for choosing Sachin Tailors! We appreciate your business.", normal_style))
+        elements.append(Paragraph("Contact: +91 81222 88855 | Email: info@sachintailors.com | Address: 123 Tailor Street, City, India", footer_style))
+        elements.append(Paragraph("“Where every stitch tells your story.”", tagline_style))
 
+        # =====================
         # Build PDF
+        # =====================
         doc.build(elements)
         buffer.seek(0)
         logger.debug(f"PDF generated successfully for bill_no: {order['bill_no']}")
         return buffer
+
     except Exception as e:
         logger.error(f"Error generating PDF for bill_no {order['bill_no']}: {str(e)}")
         raise
+
 
 @app.route('/')
 def index():

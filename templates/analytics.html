@@ -3,12 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analytics - Sachin Tailors</title>
+    <title>Analytics - New Sachin Tailors</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Brand Colors */
+        :root {
+            --primary: #1A2A44; /* Navy blue */
+            --accent: #D4A017; /* Gold */
+            --highlight: #FFF5B7; /* Light yellow */
+            --text-dark: #222;
+            --text-light: #555;
+            --bg-light: #F9F9F9;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: var(--primary);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: var(--highlight); /* Light yellow */
+        }
+
+        .logout-btn {
+            background: var(--accent);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .logout-btn:hover {
+            background: #c49614;
+        }
+
+        .container {
+            padding: 2rem;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            color: var(--accent);
+            margin-top: 1.5rem;
+        }
+
+        p, li {
+            color: var(--text-light);
+            font-size: 1rem;
+            margin: 0.3rem 0;
+        }
+
+        strong {
+            color: var(--primary);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li {
+            background: white;
+            border-left: 4px solid var(--accent);
+            margin: 0.3rem 0;
+            padding: 0.5rem;
+            border-radius: 5px;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 0.6rem 1.2rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background: #152033;
+        }
+
+        footer {
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>Sachin Tailors</h1>
+        <h1>New Sachin Tailors</h1>
         <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
     </header>
     <main class="container">
@@ -16,9 +122,10 @@
         <div>
             <h2>Summary</h2>
             <p><strong>Total Orders:</strong> {{ analytics.total_orders }}</p>
-            <p><strong>Total Revenue:</strong> ${{ analytics.total_revenue|round(2) }}</p>
-            <p><strong>Average Order Value:</strong> ${{ analytics.avg_order_value|round(2) }}</p>
+            <p><strong>Total Revenue:</strong> {{ analytics.total_revenue|round(2) }}</p>
+            <p><strong>Average Order Value:</strong> {{ analytics.avg_order_value|round(2) }}</p>
             <p><strong>Total Unique Customers:</strong> {{ analytics.total_customers }}</p>
+            
             <h2>Orders by Status</h2>
             <ul>
                 {% for status, count in analytics.orders_by_status.items() %}
@@ -29,7 +136,7 @@
         <a href="{{ url_for('admin_dashboard') }}" class="btn">Back to Dashboard</a>
     </main>
     <footer>
-        &copy; 2025 Sachin Tailors. All rights reserved.
+        &copy; 2025 New Sachin Tailors. All rights reserved.
     </footer>
 </body>
 </html>
